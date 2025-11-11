@@ -1,0 +1,18 @@
+{% extends 'crowdsource_app/base.html' %}
+{% block title %}
+    Bahan - Login
+{% endblock title %}
+{% block content %}
+    <div class="container">
+        <h1>Login</h1>
+        {% load crispy_forms_tags %}
+        <form action="/login/" method="post">
+            {% csrf_token %}
+            {{ form|crispy }}
+            <p class="p-2 ">
+                Don't have an account? <a href="{% url 'crowdsource_app:signup' %}">Sign Up</a>
+            </p>
+            <button type="submit" class="btn btn-primary">Login</button>
+        </form>
+    </div>
+{% endblock content %}
