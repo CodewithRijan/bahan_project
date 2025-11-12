@@ -3,7 +3,18 @@
     Bahan - Home
 {% endblock title %}
 {% block content %}
-    <div class="container">
-        <h1>Heyy, you are in home page. Here will leaflet js map integration.</h1>
+    <div class="container my-5">
+        <div id="map"></div>
     </div>
+    <script>
+                // 7. Initialize the map. We'll center it on Kathmandu (e.g., Ratna Park).
+        //    Coordinates are [Latitude, Longitude]
+        const map = L.map('map').setView([27.7050, 85.3180], 13); // 13 is the zoom level
+
+        // 8. Add the map "tiles" (the actual map images) from OpenStreetMap.
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '© <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+        }).addTo(map);
+    </script>
 {% endblock content %}
