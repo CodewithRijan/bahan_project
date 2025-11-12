@@ -18,6 +18,7 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     'crispy_forms',
     # If using a specific template pack like Bootstrap 5:
+    'accounts.apps.AccountsConfig',
     'crispy_bootstrap5',
     'crowdsource_app.apps.CrowdsourceAppConfig',
     'django.contrib.admin',
