@@ -5,5 +5,8 @@ from . import views
 app_name="crowdsource_app"
 urlpatterns = [
     path('',views.home, name="home"),
-    path('report/',views.report,name="report")
+    path('report/',views.report,name="report"),
+    path('stop/<int:stop_id>',views.stop,name="stop"),
+    path('community/',views.CommunityView.as_view(),name="community"),
+    path('add_rating/<int:stop_id>',views.rating_view,name="add_rating")
 ]
