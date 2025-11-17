@@ -1,0 +1,26 @@
+.timer-container {
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f4f4;
+    border-radius: 10px;
+    padding: 20px;
+    text-align: center;
+    margin: 20px auto;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+#timerDisplay {
+    font-size: 3.5rem;
+    font-weight: bold;
+    color: #333;
+    letter-spacing: 2px;
+    margin: 10px 0;
+}
+.btn-group-timer .btn {
+    font-size: 1.1rem;
+    margin: 0 5px;
+}
+
+.stop-container {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}
