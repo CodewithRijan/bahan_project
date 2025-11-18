@@ -53,9 +53,21 @@
                             <button id="stopBtn" class="btn btn-danger btn-lg">My Bus is Here!</button>
                             <button id="resetBtn" class="btn btn-secondary btn-lg">Reset</button>
                         </div>
-                    </div>
+                    </div >
                 </div>
-                <div class="d-flex col-8 border">WaitLog Data here</div>
+                <!-- The Waitlog Timestamps here. -->
+                <div class="d-flex col-8 border">
+                    <div class="card w-max h-min">
+                        <div class="card-header">
+                            Featured
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title">Special title treatment</h5>
+                            <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+                            <a href="#" class="btn btn-primary">Go somewhere</a>
+                        </div>
+                        </div>
+                </div>
             </div>
         </div>
     </div>
@@ -78,6 +90,7 @@
                 </div>
                 <div class="modal-body">
                     <p>This helps us provide accurate data for other users.</p>
+                    {% csrf_token %}
                     <!-- A simple form for route selection -->
                     <select class="form-select" id="routeSelect">
                         <option value="" selected disabled>-- Select a route --</option>
@@ -128,5 +141,8 @@
     </div>
 {% endblock content %}
 {% block extrascripts %}
+    <script>
+        var bus_stop_id = "{{ stop_id }}";
+        </script>
     <script type="text/JavaScript" src="{% static 'crowdsource_app/stop.js' %}"></script>
 {% endblock %}
