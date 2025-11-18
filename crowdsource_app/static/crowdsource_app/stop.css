@@ -24,3 +24,44 @@
     justify-content: center;
     flex-direction: column;
 }
+
+/* Custom Styling (add to your styles.css or <style> tag) */
+
+/* Enhance timer display */
+#timer-display {
+  font-family: monospace;
+  color: #007bff; /* Bootstrap primary blue */
+  background: #f8f9fa;
+  border-radius: 8px;
+  padding: 10px;
+}
+
+/* Log Cards custom tweaks */
+.log-card {
+  border: 1px solid #dee2e6; /* Bootstrap light border */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); /* Subtle shadow */
+}
+
+.log-card .card-title {
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.log-card .card-text {
+  font-size: 0.875rem;
+  color: #6c757d; /* Bootstrap secondary text */
+}
+
+.log-card .wait-duration {
+  font-weight: bold;
+  color: #198754; /* Bootstrap success green for duration */
+}
+
+/* Empty state */
+#logs-list:empty::before {
+  content: "No wait logs yet. Be the first!";
+  color: #6c757d;
+  font-style: italic;
+  text-align: center;
+  padding: 20px;
+}

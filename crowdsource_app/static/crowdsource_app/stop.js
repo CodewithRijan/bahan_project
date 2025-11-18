@@ -22,8 +22,54 @@ beginWaitBtn.addEventListener('click', handleBeginWait);
 stopBtn.addEventListener('click', stopTimer);
 resetBtn.addEventListener('click', resetTimer);
 
-function setWaitLogInformation(data) {
-    waitLogInformation = data;
+function getWaitLogInformation() {
+
+    const URL = "http://127.0.0.1:8000/api/waitlogs/" + bus_stop_id + "/"
+
+    getApi(URL)
+        .then(data => {
+            console.log(data);
+            populateLogs(data);
+        })
+        .catch(error => {
+            console.error(error);
+        });
+}
+
+getWaitLogInformation();
+
+// Function to format wait_duration from seconds to mm:ss
+function formatDuration(seconds) {
+  if (!seconds) return 'N/A';
+  const mins = Math.floor(seconds / 60);
+  const secs = seconds % 60;
+  return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+}
+
+// DOM Manipulation: Assume 'data' is the array from your fetch response
+// e.g., After your fetch.then(response => response.json()).then(data => { populateLogs(data); })
+function populateLogs(data) {
+  const logsList = document.getElementById('logs-list');
+  logsList.innerHTML = '';  // Clear existing content
+
+  // Loop through each wait log and create a Bootstrap card
+  data.forEach(log => {
+    const card = document.createElement('div');
+    card.classList.add('card', 'log-card');
+
+    const cardBody = document.createElement('div');
+    cardBody.classList.add('card-body');
+
+    // Populate with fields (username, route, wait_duration; bus_stop is implied as current page)
+    cardBody.innerHTML = `
+      <h6 class="card-title username">${log.username || 'Anonymous'}</h6>
+      <p class="card-text">Route: ${log.route || 'Unknown'}</p>
+      <p class="card-text wait-duration">Wait Duration: ${formatDuration(log.wait_duration)}</p>
+    `;
+
+    card.appendChild(cardBody);
+    logsList.appendChild(card);
+  });
 }
 
 function getCookie(name) {
