@@ -22,6 +22,9 @@ beginWaitBtn.addEventListener('click', handleBeginWait);
 stopBtn.addEventListener('click', stopTimer);
 resetBtn.addEventListener('click', resetTimer);
 
+function setWaitLogInformation(data) {
+    waitLogInformation = data;
+}
 
 function getCookie(name) {
     let cookieValue = null;
