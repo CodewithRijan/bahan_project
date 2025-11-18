@@ -7,7 +7,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('',include('crowdsource_app.urls')),
     path('',include('django.contrib.auth.urls')),
-    path('',include('accounts.urls'))
+    path('',include('accounts.urls')),
+    path('api/',include('api.urls'))
 ]
 
 # Only when application is in development, serve the media files through this url

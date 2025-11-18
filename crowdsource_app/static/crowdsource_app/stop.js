@@ -1,3 +1,4 @@
+
 const timerDisplay = document.getElementById('timerDisplay');
 const startBtn = document.getElementById('startBtn');
 const stopBtn = document.getElementById('stopBtn');
@@ -10,18 +11,35 @@ const routeSelect = document.getElementById('routeSelect');
 const routeError = document.getElementById('routeError');
 const routeModal = new bootstrap.Modal(document.getElementById('routeModal')); // Get Bootstrap modal instance
 
-// --- 2. State Variables ---
 // These variables will manage the timer's state.
 let timerInterval = null; // Holds the "setInterval" ID so we can stop it
 let startTime = 0;        // Stores the exact millisecond timestamp when the timer starts
 let selectedRoute = null; // Stores the route the user picks
+let waitLogInformation = null
 
 // --- 3. Attach Event Listeners ---
 beginWaitBtn.addEventListener('click', handleBeginWait);
 stopBtn.addEventListener('click', stopTimer);
 resetBtn.addEventListener('click', resetTimer);
 
-// --- 4. Core Functions ---
+
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+const CSRF_TOKEN= getCookie('csrftoken');
+
 
 /**
  * Called when the user clicks "Begin Wait" in the modal.
@@ -71,6 +89,8 @@ function updateDisplay() {
 function stopTimer() {
     clearInterval(timerInterval); // Stop the "ticker"
     const endTime = Date.now(); // Record the exact end time
+
+    // Server URL
     
     // --- YOUR DRF AJAX CALL GOES HERE ---
     // You have all the data you need right here.
@@ -83,17 +103,52 @@ function stopTimer() {
     
     // Example of the data object you will send in your fetch() call:
     const waitLogData = {
-        bus_stop_id: 123, // You'll get this from your Django template
+        bus_stop: bus_stop_id, // You'll get this from your Django template
         route: selectedRoute,
         start_time: new Date(startTime).toISOString(), // Send as standard ISO string
         end_time: new Date(endTime).toISOString()
     };
     
     console.log("Data to send:", JSON.stringify(waitLogData));
+
+    const API_URL = "http://127.0.0.1:8000/api/waitlogs/" + waitLogData.bus_stop + "/";
+
+    postApi(API_URL,waitLogData)
+        .then(data => {
+            console.log(data);
+            waitLogInformation = data
+        })
+        .catch(error => {
+            console.error(error);
+        });
+
     
+    
+
     // After your AJAX call is successful, you can reset the timer
-    // For now, we'll just reset it immediately.
     resetTimer();
+}
+
+async function getApi(url) {
+    const response = await fetch(url);
+    return response.json();
+}
+
+async function postApi(url,data) {
+
+
+    const response = await fetch(url, {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': CSRF_TOKEN
+        },
+        body: JSON.stringify(data),
+        credentials: 'include'
+    });
+
+    return response.json();
+    
 }
 
 /**

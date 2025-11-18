@@ -17,11 +17,20 @@ class WaitLogModel(models.Model):
     
     user = models.ForeignKey(User,on_delete=models.CASCADE)
     bus_stop = models.ForeignKey(BusStop,on_delete=models.CASCADE,verbose_name="Bus Stop")
-    start_time = models.DateTimeField(auto_now_add=True,verbose_name="Start Time")
+    start_time = models.DateTimeField(verbose_name="Start Time")
     end_time = models.DateTimeField(verbose_name="End Time")
     wait_duration = models.IntegerField(default=0)
-    likes = models.IntegerField(default=0)
+    likes = models.IntegerField(default=0,editable=False)
     route = models.CharField()
+    
+    def save(self, *args, **kwargs):
+        if self.start_time and self.end_time:
+            self.wait_duration = (self.end_time - self.start_time).total_seconds()
+        
+        super().save(*args, **kwargs) # Call the "real" save method
+
+    def __str__(self):
+        return f"{self.user.username} waited at {self.bus_stop.bus_stop_name} for {self.wait_duration}s"
     
 class Rating(models.Model):
     
