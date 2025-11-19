@@ -36,7 +36,6 @@ function getWaitLogInformation() {
         });
 }
 
-getWaitLogInformation();
 
 // Function to format wait_duration from seconds to mm:ss
 function formatDuration(seconds) {
@@ -46,31 +45,6 @@ function formatDuration(seconds) {
   return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
 }
 
-// DOM Manipulation: Assume 'data' is the array from your fetch response
-// e.g., After your fetch.then(response => response.json()).then(data => { populateLogs(data); })
-function populateLogs(data) {
-  const logsList = document.getElementById('logs-list');
-  logsList.innerHTML = '';  // Clear existing content
-
-  // Loop through each wait log and create a Bootstrap card
-  data.forEach(log => {
-    const card = document.createElement('div');
-    card.classList.add('card', 'log-card');
-
-    const cardBody = document.createElement('div');
-    cardBody.classList.add('card-body');
-
-    // Populate with fields (username, route, wait_duration; bus_stop is implied as current page)
-    cardBody.innerHTML = `
-      <h6 class="card-title username">${log.username || 'Anonymous'}</h6>
-      <p class="card-text">Route: ${log.route || 'Unknown'}</p>
-      <p class="card-text wait-duration">Wait Duration: ${formatDuration(log.wait_duration)}</p>
-    `;
-
-    card.appendChild(cardBody);
-    logsList.appendChild(card);
-  });
-}
 
 function getCookie(name) {
     let cookieValue = null;
@@ -136,13 +110,11 @@ function updateDisplay() {
  * Stops the stopwatch and prepares data for your DRF endpoint.
  */
 function stopTimer() {
-    clearInterval(timerInterval); // Stop the "ticker"
-    const endTime = Date.now(); // Record the exact end time
+    clearInterval(timerInterval); 
+    const endTime = Date.now(); 
 
-    // Server URL
+    alert("Thanks for contributing! Wait log saved.");
     
-    // --- YOUR DRF AJAX CALL GOES HERE ---
-    // You have all the data you need right here.
     
     console.log("--- Sending data to DRF endpoint ---");
     console.log("Selected Route:", selectedRoute);
@@ -150,11 +122,10 @@ function stopTimer() {
     console.log("End Time (ms):", endTime);
     console.log("Total Wait (ms):", endTime - startTime);
     
-    // Example of the data object you will send in your fetch() call:
     const waitLogData = {
-        bus_stop: bus_stop_id, // You'll get this from your Django template
+        bus_stop: bus_stop_id, 
         route: selectedRoute,
-        start_time: new Date(startTime).toISOString(), // Send as standard ISO string
+        start_time: new Date(startTime).toISOString(), 
         end_time: new Date(endTime).toISOString()
     };
     
@@ -170,9 +141,6 @@ function stopTimer() {
         .catch(error => {
             console.error(error);
         });
-
-    
-    
 
     // After your AJAX call is successful, you can reset the timer
     resetTimer();
@@ -229,4 +197,192 @@ function formatTime(ms) {
     const pad = (num) => String(num).padStart(2, '0');
 
     return `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
+}
+
+// Render rating stars based on the numeric average shown in the DOM.
+function renderRatingStars() {
+    // Locate the container that holds the average rating and the stars
+    const ratingContainer = document.querySelector('.text-end .text-warning');
+    if (!ratingContainer) return;
+
+    // The numeric rating is shown in the first span inside this container
+    const scoreSpan = ratingContainer.querySelector('span');
+    if (!scoreSpan) return;
+
+    const raw = scoreSpan.textContent.trim();
+    const avg = parseFloat(raw);
+    if (Number.isNaN(avg)) return; // nothing to do
+
+    // Compute full, half and empty stars (support halves)
+    const maxStars = 5;
+    const fullStars = Math.floor(avg);
+    const fraction = avg - fullStars;
+    let halfStars = 0;
+    if (fraction >= 0.75) {
+        // round up to full star
+        halfStars = 0;
+    } else if (fraction >= 0.25) {
+        halfStars = 1;
+    }
+    const displayedFull = fullStars + (fraction >= 0.75 ? 1 : 0);
+    const emptyStars = maxStars - displayedFull - halfStars;
+
+    // Build star HTML
+    let starsHtml = '';
+    for (let i = 0; i < displayedFull; i++) {
+        starsHtml += '<i class="fas fa-star"></i>';
+    }
+    if (halfStars === 1) {
+        // Use FontAwesome half star icon; adjust if your FA version differs
+        starsHtml += '<i class="fas fa-star-half-alt"></i>';
+    }
+    for (let i = 0; i < emptyStars; i++) {
+        starsHtml += '<i class="far fa-star"></i>';
+    }
+
+    // Keep the numeric score visible and replace the star icons
+    // Build new innerHTML: numeric score (span) + stars
+    ratingContainer.innerHTML = `${scoreSpan.outerHTML}${starsHtml}`;
+}
+
+// Run on DOM ready
+document.addEventListener('DOMContentLoaded', () => {
+    renderRatingStars();
+    getWaitLogInformation();
+});
+
+
+// The Log Card section
+// DOM Manipulation: 'data' is the array from your fetch response
+function populateLogs(data) {
+    // Find the column that holds the feed. We'll append generated log cards here.
+    const feedColumn = document.querySelector('.col-lg-8');
+    if (!feedColumn) return;
+
+    // Remove any existing sample/static log-card placeholders so we can render fresh
+    const existing = feedColumn.querySelectorAll('.log-card');
+    existing.forEach(el => el.remove());
+
+    // If there's no data, show a friendly no-results message
+    if (!Array.isArray(data) || data.length === 0) {
+        const msg = document.createElement('div');
+        msg.className = 'text-muted p-3';
+        msg.textContent = 'No recent logs at this stop. Be the first to contribute!';
+        feedColumn.appendChild(msg);
+        return;
+    }
+
+    // Helpers
+    function timeAgo(iso) {
+        if (!iso) return 'just now';
+        const then = new Date(iso).getTime();
+        if (Number.isNaN(then)) return 'just now';
+        const diff = Date.now() - then;
+        const sec = Math.floor(diff / 1000);
+        if (sec < 60) return `${sec} sec ago`;
+        const min = Math.floor(sec / 60);
+        if (min < 60) return `${min} min ago`;
+        const hr = Math.floor(min / 60);
+        if (hr < 24) return `${hr} hr${hr > 1 ? 's' : ''} ago`;
+        const days = Math.floor(hr / 24);
+        return `${days} day${days > 1 ? 's' : ''} ago`;
+    }
+
+    function formatWaitVerbose(seconds) {
+        if (!seconds && seconds !== 0) return 'N/A';
+        const mins = Math.floor(seconds / 60);
+        const secs = seconds % 60;
+        const parts = [];
+        if (mins > 0) parts.push(`${String(mins).padStart(2, '0')} min`);
+        parts.push(`${String(secs).padStart(2, '0')} sec`);
+        return parts.join(' ');
+    }
+
+    function escapeHtml(str) {
+        if (typeof str !== 'string') return str;
+        return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
+    // For each log, build the card markup and append
+    data.forEach(log => {
+        const card = document.createElement('div');
+        card.className = 'log-card route-border-ring';
+
+        // Header row (user info + like button)
+        const header = document.createElement('div');
+        header.className = 'd-flex justify-content-between align-items-start mb-2';
+
+        const userInfo = document.createElement('div');
+        userInfo.className = 'd-flex align-items-center';
+
+        const avatar = document.createElement('div');
+        avatar.className = 'user-avatar';
+        avatar.textContent = (log.username && log.username.length) ? log.username.charAt(0).toUpperCase() : 'U';
+
+        const usernameSpan = document.createElement('span');
+        usernameSpan.className = 'fw-bold text-dark small ms-2';
+        usernameSpan.textContent = log.username || 'Anonymous';
+
+        const bullet = document.createElement('span');
+        bullet.className = 'mx-2 text-muted';
+        bullet.innerHTML = '&bull;';
+
+        const timeSpan = document.createElement('span');
+        timeSpan.className = 'time-ago';
+        timeSpan.innerHTML = `<i class="far fa-clock me-1"></i>${timeAgo(log.created_at)}`;
+
+        userInfo.appendChild(avatar);
+        userInfo.appendChild(usernameSpan);
+        userInfo.appendChild(bullet);
+        userInfo.appendChild(timeSpan);
+
+        // Build a POST form for likes so it matches the server-side form in the template.
+        const likeForm = document.createElement('form');
+        likeForm.method = 'post';
+        likeForm.action = `/waitlogs/${bus_stop_id}/likes`;
+        likeForm.className = 'd-inline';
+
+        // CSRF token hidden input (uses CSRF_TOKEN parsed from cookie earlier)
+        const csrfInput = document.createElement('input');
+        csrfInput.type = 'hidden';
+        csrfInput.name = 'csrfmiddlewaretoken';
+        csrfInput.value = CSRF_TOKEN || '';
+        likeForm.appendChild(csrfInput);
+
+        // If the log has an id, include it so the server knows which waitlog to like
+        if (log.id) {
+            const idInput = document.createElement('input');
+            idInput.type = 'hidden';
+            idInput.name = 'waitlog_id';
+            idInput.value = String(log.id);
+            likeForm.appendChild(idInput);
+        }
+
+        const likeBtn = document.createElement('button');
+        likeBtn.type = 'submit';
+        likeBtn.className = 'btn btn-sm btn-outline-light text-secondary border-0';
+        likeBtn.innerHTML = `<i class="far fa-thumbs-up"></i> ${log.likes || 0}`;
+
+        likeForm.appendChild(likeBtn);
+
+        header.appendChild(userInfo);
+        header.appendChild(likeForm);
+
+        // Main message
+        const mainMsg = document.createElement('h5');
+        mainMsg.className = 'fw-bold text-dark mb-3';
+        const routeText = escapeHtml(log.route || 'Unknown');
+        mainMsg.innerHTML = `<i class="fas fa-bus-alt text-primary me-2"></i>Bus going <span class="text-primary">${routeText}</span> left <span class="text-dark">${timeAgo(log.created_at)}</span>.`;
+
+        // Footer wait time
+        const waitBadge = document.createElement('div');
+        waitBadge.className = 'wait-badge';
+        waitBadge.innerHTML = `<i class="fas fa-stopwatch me-2 text-secondary"></i>User waited for: ${formatWaitVerbose(log.wait_duration)} `;
+
+        card.appendChild(header);
+        card.appendChild(mainMsg);
+        card.appendChild(waitBadge);
+
+        feedColumn.appendChild(card);
+    });
 }

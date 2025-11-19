@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from accounts.models import UserProfile
 
 class BusStop(models.Model):
     
@@ -28,7 +29,17 @@ class WaitLogModel(models.Model):
             self.wait_duration = (self.end_time - self.start_time).total_seconds()
         
         super().save(*args, **kwargs) # Call the "real" save method
-
+    
+    def increment_likes(self):
+        
+        self.likes += 1
+        self.save() 
+        
+        userprofile_instance = UserProfile.objects.get(user=self.user)
+        userprofile_instance.xp += 10
+        userprofile_instance.save()
+        
+        
     def __str__(self):
         return f"{self.user.username} waited at {self.bus_stop.bus_stop_name} for {self.wait_duration}s"
     
