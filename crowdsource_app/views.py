@@ -5,7 +5,7 @@ from django.views import View
 from django.contrib.auth.models import User
 from . import models
 import json
-from .models import BusStop, Rating
+from .models import BusStop, Rating, WaitLogModel
 from django.http import Http404
 from .forms import RatingForm
 from django.contrib.auth.decorators import login_required
@@ -19,14 +19,19 @@ def stop(request,stop_id):
     
     # This is Rating Model form
     ratingForm = RatingForm()
+
+    noOfRatings = Rating.objects.filter(bus_stop=bus_stop).count()
+    
+    average_rating = round(bus_stop.average_rating,2)
         
     # We only need bus_stop_name, average_rating and bus_photo  
     context = {
         'bus_stop_name': bus_stop.bus_stop_name,
-        'average_rating': bus_stop.average_rating,
+        'average_rating': average_rating,
         'photo_url': bus_stop.bus_photo.url,
         'stop_id': stop_id,
-        'form':ratingForm 
+        'form':ratingForm,
+        'noOfRatings': noOfRatings
     }
     
     return render(request,'crowdsource_app/stop.html',context)
@@ -85,3 +90,20 @@ class CommunityView(View):
     def get(self,request):
         
         return render(request,"crowdsource_app/community_page.html")
+
+
+class LikeView(View):
+    
+    def post(self,request,stop_id):
+
+        if request.user.is_authenticated:
+
+            wait_log_id = request.POST.get('waitlog_id')
+            
+            wait_log_instance = WaitLogModel.objects.get(id=wait_log_id)
+            
+            wait_log_instance.increment_likes()
+        
+            return redirect(reverse('crowdsource_app:stop',kwargs={'stop_id':stop_id}))
+        else:
+            return redirect('/login/')

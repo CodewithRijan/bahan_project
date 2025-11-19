@@ -1,4 +1,5 @@
 {% extends 'crowdsource_app/base.html' %}
+{% load static %}
 {% block title %}
 Bahan - Home
 {% endblock title %}
@@ -45,22 +46,26 @@ Bahan - Home
         attribution: '© <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
     }).addTo(map);
 
-    // --- 2. Mock Bus Stop Data (No Django/JSON here, just static JS array) ---
-    const mockBusStops = [
-        { id: 1, name: "Ratna Park", lat: 27.7058, lon: 85.3145 },
-        { id: 2, name: "Kalanki", lat: 27.6936, lon: 85.2811 },
-        { id: 3, name: "Chabahil", lat: 27.7176, lon: 85.3464 },
-        { id: 4, name: "Koteshwor", lat: 27.6756, lon: 85.3459 },
-        { id: 5, name: "Gaushala", lat: 27.7072, lon: 85.3477 },
-        { id: 6, name: "Maharajgunj", lat: 27.7358, lon: 85.3366 }
-    ];
 
     // --- 3. Add Markers to Map ---
-    mockBusStops.forEach(stop => {
-        const marker = L.marker([stop.lat, stop.lon]).addTo(map);
+    busStops.forEach(stop => {
+        // Use a custom bus stop icon from static files
+        const busIcon = L.icon({
+            iconUrl: "{% static 'crowdsource_app/bus-station.png' %}",
+            iconSize: [36, 36], // width, height in pixels — adjust to taste
+            iconAnchor: [18, 36], // point of the icon which will correspond to marker's location
+            popupAnchor: [0, -36] // point from which the popup should open relative to the iconAnchor
+        });
+
+        const marker = L.marker([stop.lat, stop.lon], { icon: busIcon }).addTo(map);
 
         // Add a popup with a "View Details" button
-        const popupContent = ` <div class="text-center"> <h6 class="fw-bold mb-1">${stop.name}</h6> <p class="small text-muted mb-2">Bus Stop</p> <a href="/stop/${stop.id}" class="btn btn-sm btn-primary w-100" onclick="alert('Navigating to ${stop.name} page...')">View Details</a> </div> `;
+        const popupContent = ` 
+        <div class="text-center"> 
+                <h6 class="fw-bold mb-1">${stop.name}</h6> 
+                <p class="medium text-muted mb-2">Bus Stop</p>
+                <a href="/stop/${stop.id}" class="text-white btn btn-sm btn-success w-100" onclick="alert('Navigating to ${stop.name} page...')">View Details</a> 
+            </div> `;
 
         marker.bindPopup(popupContent);
     });

@@ -2,7 +2,6 @@ body, html {
     margin: 0; 
     padding: 0; 
     height: 100%; 
-    overflow: hidden; /* Prevent scrolling */
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
@@ -30,6 +29,42 @@ body, html {
     letter-spacing: -0.5px;
     font-size: 1.5rem;
 }
+
+/* --- User Profile Modal Styles --- */
+.profile-avatar {
+    width: 88px;
+    height: 88px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 36px;
+    font-weight: 700;
+    color: #ffffff;
+    background: linear-gradient(135deg, #198754 0%, #2ecc71 100%);
+    box-shadow: 0 8px 24px rgba(32, 201, 151, 0.12);
+}
+
+.xp-bar {
+    width: 100%;
+    height: 12px;
+    background: linear-gradient(90deg, rgba(0,0,0,0.04), rgba(0,0,0,0.02));
+    border-radius: 999px;
+    overflow: hidden;
+    border: 1px solid rgba(0,0,0,0.03);
+}
+
+.xp-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #28a745, #20c997);
+    width: 0%;
+    transition: width 600ms cubic-bezier(.2,.9,.2,1);
+    box-shadow: inset 0 -2px 6px rgba(0,0,0,0.08);
+}
+
+/* Small adjustments for modal content */
+.modal-content .modal-body { padding: 1.75rem; }
+.modal-title { font-size: 1.05rem; }
 
 /* --- WAZE-STYLE FLOATING CARD --- */
 .floating-action-card {
@@ -107,7 +142,30 @@ body, html {
     letter-spacing: 0.5px;
 }
 
-/* Fix for Leaflet controls overlapping navbar */
 .leaflet-top {
-    top: 80px; /* Push zoom controls down below navbar */
+    top: 80px; 
 }
+
+/* Logo css */
+/* .bahan-logo {
+  height: 48px;        
+  width: auto;         
+  object-fit: contain; 
+  transition: transform 0.2s ease; 
+}
+
+/* Slightly larger on big screens */
+/* @media (min-width: 992px) {
+  .bahan-logo {
+    height: 56px;      
+  }
+} 
+/* 
+.bahan-logo:hover {
+  transform: translateY(-2px);
+}
+
+.navbar-brand {
+  padding: 4px 0 !important; 
+  line-height: 1;            
+} */
