@@ -18,7 +18,7 @@ class WaitLogView(APIView):
      
     def get(self,request,pk):
 
-        waitlog = WaitLogModel.objects.filter(bus_stop=pk)
+        waitlog = WaitLogModel.objects.filter(bus_stop=pk).order_by('-end_time')[:5]
         
         serialized_json_data = WaitLogSerializer(waitlog,many=True)
 
