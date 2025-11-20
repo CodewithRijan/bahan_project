@@ -329,7 +329,7 @@ function populateLogs(data) {
 
         const timeSpan = document.createElement('span');
         timeSpan.className = 'time-ago';
-        timeSpan.innerHTML = `<i class="far fa-clock me-1"></i>${timeAgo(log.created_at)}`;
+        timeSpan.innerHTML = `<i class="far fa-clock me-1"></i>${timeAgo(log.end_time)}`;
 
         userInfo.appendChild(avatar);
         userInfo.appendChild(usernameSpan);
@@ -372,7 +372,7 @@ function populateLogs(data) {
         const mainMsg = document.createElement('h5');
         mainMsg.className = 'fw-bold text-dark mb-3';
         const routeText = escapeHtml(log.route || 'Unknown');
-        mainMsg.innerHTML = `<i class="fas fa-bus-alt text-primary me-2"></i>Bus going <span class="text-primary">${routeText}</span> left <span class="text-dark">${timeAgo(log.created_at)}</span>.`;
+        mainMsg.innerHTML = `<i class="fas fa-bus-alt text-primary me-2"></i>Bus going <span class="text-primary">${routeText}</span> left <span class="text-dark">${timeAgo(log.end_time)}</span>.`;
 
         // Footer wait time
         const waitBadge = document.createElement('div');

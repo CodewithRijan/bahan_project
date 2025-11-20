@@ -12,14 +12,18 @@ Bahan - Stop
 
             <div class="col-md-5 position-relative bg-light">
                 <!-- Using a placeholder image for the demo -->
-                <img src="{{ photo_url }}" class="img-fluid h-100 w-100 object-fit-cover" alt="{{ bus_stop_name }}"
-                    style="min-height: 250px;">
+                {% if stop_id < 5 %} <img src="{{ photo_url }}" class="img-fluid h-100 w-100 object-fit-cover"
+                    alt="{{ bus_stop_name }}" style="min-height: 250px;">
+                    {% else %}
+                    <img src="images/bus_stop_placeholder.jpg" class="img-fluid h-100 w-100 object-fit-cover"
+                        alt="{{ bus_stop_name }}" style="min-height: 250px;">
+                    {% endif %}
 
-                <!-- Overlay Badge -->
-                <span
-                    class="position-absolute top-0 start-0 m-3 badge bg-dark bg-opacity-75 rounded-pill px-3 py-2 backdrop-blur">
-                    <i class="fas fa-map-marker-alt me-1"></i> Kathmandu
-                </span>
+                    <!-- Overlay Badge -->
+                    <span
+                        class="position-absolute top-0 start-0 m-3 badge bg-dark bg-opacity-75 rounded-pill px-3 py-2 backdrop-blur">
+                        <i class="fas fa-map-marker-alt me-1"></i> Kathmandu
+                    </span>
             </div>
 
             <!-- RIGHT SIDE: Details -->

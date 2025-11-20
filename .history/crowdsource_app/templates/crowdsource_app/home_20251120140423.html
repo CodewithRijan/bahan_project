@@ -1,0 +1,121 @@
+{% extends 'crowdsource_app/base.html' %}
+{% load static %}
+{% block title %}
+Bahan - Home
+{% endblock title %}
+{% block content %}
+<div id="map"></div>
+</div>
+<!-- Waze-Like Reporting Buttons -->
+<div class="floating-action-card">
+    <!-- Feature 1: Report Traffic -->
+    <button class="action-btn" onclick="reportIssue('traffic')">
+        <div class="action-icon icon-traffic shadow-sm"><i class="fas fa-car-crash"></i></div>
+        <span class="action-label">Traffic</span>
+    </button>
+
+    <!-- Feature 2: Report Checking -->
+    <button class="action-btn" onclick="reportIssue('checking')">
+        <div class="action-icon icon-checking shadow-sm"><i class="fas fa-user-shield"></i></div>
+        <span class="action-label">Checking</span>
+    </button>
+
+    <!-- Feature 3: Spot a Bus -->
+    <button class="action-btn" onclick="reportIssue('bus')">
+        <div class="action-icon icon-bus shadow-sm"><i class="fas fa-bus"></i></div>
+        <span class="action-label">Bus Spot</span>
+    </button>
+</div>
+<script>
+    const busStopsJson = '{{ bus_stops_json|safe }}';
+
+    const busStops = JSON.parse(busStopsJson);
+
+    const map = L.map('map', {
+        zoomControl: false // We will add zoom control manually to position it better
+    }).setView([27.7050, 85.3180], 14);
+
+    // Add Zoom Control to top-right (to avoid clashing with navbar)
+    L.control.zoom({
+        position: 'topright'
+    }).addTo(map);
+
+    // Add OpenStreetMap Tiles
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '© <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+    }).addTo(map);
+
+
+    // --- 3. Add Markers to Map ---
+    busStops.forEach(stop => {
+        // Use a custom bus stop icon from static files
+        const busIcon = L.icon({
+            iconUrl: "{% static 'crowdsource_app/bus-station.png' %}",
+            iconSize: [36, 36], // width, height in pixels — adjust to taste
+            iconAnchor: [18, 36], // point of the icon which will correspond to marker's location
+            popupAnchor: [0, -36] // point from which the popup should open relative to the iconAnchor
+        });
+
+        const marker = L.marker([stop.lat, stop.lon], { icon: busIcon }).addTo(map);
+
+        // Add a popup with a "View Details" button
+        const popupContent = ` 
+        <div class="text-center"> 
+                <h6 class="fw-bold mb-1">${stop.name}</h6> 
+                <p class="medium text-muted mb-2">Bus Stop</p>
+                <a href="/stop/${stop.id}" class="text-white btn btn-sm btn-success w-100" onclick="alert('Navigating to ${stop.name} page...')">View Details</a> 
+            </div> `;
+
+        marker.bindPopup(popupContent);
+    });
+
+    // --- 4. Waze-Like Reporting Logic (Mock) ---
+    function reportIssue(type) {
+        // Check if browser supports geolocation
+        if (navigator.geolocation) {
+            // Show a "Loading" state cursor or toast here in a real app
+
+            navigator.geolocation.getCurrentPosition(
+                // Success Callback
+                (position) => {
+                    const lat = position.coords.latitude;
+                    const lng = position.coords.longitude;
+
+                    // Map the type to a readable name and icon color
+                    let typeName = "";
+                    let markerColor = "blue"; // default
+
+                    if (type === 'traffic') { typeName = "Heavy Traffic"; markerColor = "red"; }
+                    else if (type === 'checking') { typeName = "Checking/Police"; markerColor = "blue"; }
+                    else if (type === 'bus') { typeName = "Bus Spotted"; markerColor = "green"; }
+
+                    // Alert the user (Mocking the API success)
+                    alert(`📍 REPORT SENT!\n\nType: ${typeName}\nLocation: ${lat.toFixed(4)}, ${lng.toFixed(4)}\n\nThanks for contributing to Bahan!`);
+
+                    // VISUAL FEEDBACK: Drop a temporary marker on the map
+                    // We use a custom circle marker to distinguish user reports from bus stops
+                    L.circleMarker([lat, lng], {
+                        color: markerColor,
+                        fillColor: markerColor,
+                        fillOpacity: 0.5,
+                        radius: 10
+                    }).addTo(map)
+                        .bindPopup(`<b>${typeName}</b><br>Reported just now`)
+                        .openPopup();
+
+                    // Center map on user's location
+                    map.setView([lat, lng], 15);
+                },
+                // Error Callback
+                () => {
+                    alert("⚠️ Location Error: We need your GPS location to verify the report.");
+                }
+            );
+        } else {
+            alert("Geolocation is not supported by this browser.");
+        }
+    }
+
+</script>
+{% endblock content %}
