@@ -26,6 +26,38 @@ Bahan - Home
         <span class="action-label">Bus Spot</span>
     </button>
 </div>
+<div class="modal fade" id="reportModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header border-0">
+                <h5 class="modal-title fw-bold">Confirm Report</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center pb-4">
+                <!-- Dynamic Icon Container -->
+                <div id="modalIconContainer"></div>
+
+                <h4 class="fw-bold mb-1" id="modalTitle">Report Type</h4>
+                <p class="text-muted mb-4">Are you sure you want to report this at your current location?</p>
+
+                <!-- Location Preview -->
+                <div class="bg-light p-2 rounded-3 mb-4 d-inline-block px-3 border">
+                    <small class="text-muted"><i class="fas fa-map-marker-alt me-1"></i>Location detected</small>
+                    <div class="fw-bold text-dark" id="modalLocation">Fetching GPS...</div>
+                </div>
+
+                <div class="d-grid gap-2">
+                    <button type="button" class="btn btn-lg btn-primary rounded-pill fw-bold shadow-sm"
+                        id="confirmReportBtn">
+                        Yes, Send Report
+                    </button>
+                    <button type="button" class="btn btn-light text-muted rounded-pill"
+                        data-bs-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 <script>
     const busStopsJson = '{{ bus_stops_json|safe }}';
 
@@ -70,52 +102,95 @@ Bahan - Home
         marker.bindPopup(popupContent);
     });
 
-    // --- 4. Waze-Like Reporting Logic (Mock) ---
-    function reportIssue(type) {
-        // Check if browser supports geolocation
-        if (navigator.geolocation) {
-            // Show a "Loading" state cursor or toast here in a real app
+    // State variables to hold data between steps
+    let pendingReport = {
+        type: null,
+        lat: null,
+        lng: null
+    };
+    const reportModal = new bootstrap.Modal(document.getElementById('reportModal'));
 
-            navigator.geolocation.getCurrentPosition(
-                // Success Callback
-                (position) => {
-                    const lat = position.coords.latitude;
-                    const lng = position.coords.longitude;
+    // Step 1: User clicks a button -> Get Location & Show Modal
+    function initiateReport(type) {
+        // Change cursor to wait
+        document.body.style.cursor = 'wait';
 
-                    // Map the type to a readable name and icon color
-                    let typeName = "";
-                    let markerColor = "blue"; // default
-
-                    if (type === 'traffic') { typeName = "Heavy Traffic"; markerColor = "red"; }
-                    else if (type === 'checking') { typeName = "Checking/Police"; markerColor = "blue"; }
-                    else if (type === 'bus') { typeName = "Bus Spotted"; markerColor = "green"; }
-
-                    // Alert the user (Mocking the API success)
-                    alert(`📍 REPORT SENT!\n\nType: ${typeName}\nLocation: ${lat.toFixed(4)}, ${lng.toFixed(4)}\n\nThanks for contributing to Bahan!`);
-
-                    // VISUAL FEEDBACK: Drop a temporary marker on the map
-                    // We use a custom circle marker to distinguish user reports from bus stops
-                    L.circleMarker([lat, lng], {
-                        color: markerColor,
-                        fillColor: markerColor,
-                        fillOpacity: 0.5,
-                        radius: 10
-                    }).addTo(map)
-                        .bindPopup(`<b>${typeName}</b><br>Reported just now`)
-                        .openPopup();
-
-                    // Center map on user's location
-                    map.setView([lat, lng], 15);
-                },
-                // Error Callback
-                () => {
-                    alert("⚠️ Location Error: We need your GPS location to verify the report.");
-                }
-            );
-        } else {
-            alert("Geolocation is not supported by this browser.");
+        if (!navigator.geolocation) {
+            alert("Geolocation is not supported by your browser.");
+            document.body.style.cursor = 'default';
+            return;
         }
+
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                // 1. Save data to state
+                pendingReport.lat = position.coords.latitude;
+                pendingReport.lng = position.coords.longitude;
+                pendingReport.type = type;
+
+                // 2. Prepare Modal Content (Dynamic Icons/Colors)
+                const titleEl = document.getElementById('modalTitle');
+                const iconContainer = document.getElementById('modalIconContainer');
+                const locEl = document.getElementById('modalLocation');
+
+                let iconHtml = '';
+                let titleText = '';
+
+                if (type === 'traffic') {
+                    titleText = 'Heavy Traffic';
+                    iconHtml = `<div class="report-icon-large" style="background-color: #ffe6e6; color: #dc3545;"><i class="fas fa-car-crash"></i></div>`;
+                } else if (type === 'checking') {
+                    titleText = 'Police / Checking';
+                    iconHtml = `<div class="report-icon-large" style="background-color: #e6f0ff; color: #0d6efd;"><i class="fas fa-user-shield"></i></div>`;
+                } else if (type === 'bus') {
+                    titleText = 'Bus Spotted';
+                    iconHtml = `<div class="report-icon-large" style="background-color: #e6f8ed; color: #198754;"><i class="fas fa-bus"></i></div>`;
+                }
+
+                titleEl.textContent = titleText;
+                iconContainer.innerHTML = iconHtml;
+                locEl.textContent = `${pendingReport.lat.toFixed(4)}, ${pendingReport.lng.toFixed(4)}`;
+
+                // 3. Reset cursor & Show Modal
+                document.body.style.cursor = 'default';
+                reportModal.show();
+            },
+            () => {
+                document.body.style.cursor = 'default';
+                alert("⚠️ Location Error: We need your GPS location to verify the report.");
+            }
+        );
     }
+
+    // Step 2: User clicks "Confirm" in Modal -> Place Marker
+    document.getElementById('confirmReportBtn').addEventListener('click', () => {
+        // 1. Close Modal
+        reportModal.hide();
+
+        // 2. Add Marker to Map (Visual Feedback)
+        let markerColor = 'blue';
+        let typeName = 'Report';
+
+        if (pendingReport.type === 'traffic') { markerColor = 'red'; typeName = "Traffic"; }
+        else if (pendingReport.type === 'checking') { markerColor = 'blue'; typeName = "Checking"; }
+        else if (pendingReport.type === 'bus') { markerColor = 'green'; typeName = "Bus"; }
+
+        // Use a simple circle marker for user reports
+        L.circleMarker([pendingReport.lat, pendingReport.lng], {
+            color: markerColor,
+            fillColor: markerColor,
+            fillOpacity: 0.6,
+            radius: 12
+        }).addTo(map)
+            .bindPopup(`<b>${typeName} Reported</b><br>Just now`)
+            .openPopup();
+
+        // Center map to show the new report
+        map.setView([pendingReport.lat, pendingReport.lng], 16);
+
+        // 3. (In Real App) Send data to API via fetch()
+        console.log("Report Sent:", pendingReport);
+    });
 
 </script>
 {% endblock content %}
