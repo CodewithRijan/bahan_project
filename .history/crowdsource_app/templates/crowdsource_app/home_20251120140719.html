@@ -26,38 +26,6 @@ Bahan - Home
         <span class="action-label">Bus Spot</span>
     </button>
 </div>
-<div class="modal fade" id="reportModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header border-0">
-                <h5 class="modal-title fw-bold">Confirm Report</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body text-center pb-4">
-                <!-- Dynamic Icon Container -->
-                <div id="modalIconContainer"></div>
-
-                <h4 class="fw-bold mb-1" id="modalTitle">Report Type</h4>
-                <p class="text-muted mb-4">Are you sure you want to report this at your current location?</p>
-
-                <!-- Location Preview -->
-                <div class="bg-light p-2 rounded-3 mb-4 d-inline-block px-3 border">
-                    <small class="text-muted"><i class="fas fa-map-marker-alt me-1"></i>Location detected</small>
-                    <div class="fw-bold text-dark" id="modalLocation">Fetching GPS...</div>
-                </div>
-
-                <div class="d-grid gap-2">
-                    <button type="button" class="btn btn-lg btn-primary rounded-pill fw-bold shadow-sm"
-                        id="confirmReportBtn">
-                        Yes, Send Report
-                    </button>
-                    <button type="button" class="btn btn-light text-muted rounded-pill"
-                        data-bs-dismiss="modal">Cancel</button>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
 <script>
     const busStopsJson = '{{ bus_stops_json|safe }}';
 
