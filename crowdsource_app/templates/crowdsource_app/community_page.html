@@ -1,9 +1,33 @@
 {% extends 'crowdsource_app/base.html' %}
-{% block title %}
-    Bahan - Community
-{% endblock title %}
+{% block title %}Bahan - Community{% endblock title %}
 {% block content %}
-    <div class="container">
-        <h1>Community</h1>
+
+<div class="under-wrap">
+    <div class="card-uc">
+        <div class="icon-stack" aria-hidden="true">
+            <div class="icon-circle icon-pulse" title="Warning">
+                <i class="fas fa-exclamation-triangle fa-2x"></i>
+            </div>
+            <div class="icon-circle">
+                <i class="fas fa-gear icon-gear"></i>
+            </div>
+            <div class="icon-circle">
+                <i class="fas fa-wrench"></i>
+            </div>
+        </div>
+
+        <h1 class="uc-title"><span class="shimmer">Webpage Under Construction</span></h1>
+        <p class="uc-sub">Thanks for stopping by — our community page is being built. We'll be back soon with features
+            for discussion, events, and local updates.</p>
+
+        <div class="d-flex justify-content-center gap-2">
+            <a href="{% url 'crowdsource_app:home' %}" class="btn btn-success rounded-pill px-4 py-2 me-2">Return
+                Home</a>
+            <a href="#" class="btn btn-primary rounded-pill px-4 py-2">Contact Team</a>
+        </div>
+
+        <p class="small-note">Follow our progress — check back later or join the community when it's ready.</p>
     </div>
+</div>
+
 {% endblock content %}

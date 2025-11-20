@@ -1,18 +1,57 @@
 {% extends 'crowdsource_app/base.html' %}
 {% block title %}
-    Bahan - Sign Up
+Bahan - Sign Up
 {% endblock title %}
+{% block css %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'accounts/registration.css' %}">
+{% endblock css %}
 {% block content %}
-    <div class="container">
-        <h1>Sign Up</h1>
-        {% load crispy_forms_tags %}
-        <form action="{% url 'accounts:signup' %}" method="post">
-            {% csrf_token %}
-            {{ form|crispy }}
-            <p class="p-2">
-                Already have an account? <a href="/login/">Login</a>
-            </p>
-            <button type="submit" class="btn btn-primary">Sign Up</button>
-        </form>
+<div class="container flex-grow-1 d-flex align-items-center justify-content-center py-5 auth-container">
+    <div class="row w-100 justify-content-center">
+        <div class="col-lg-6 col-md-8 col-12">
+            <!-- The Form Card -->
+            <div class="card auth-card">
+
+                <!-- Header -->
+                <div class="auth-header">
+                    <div class="mb-3">
+                        <span class="badge bg-primary bg-opacity-10 text-primary rounded-circle p-3">
+                            <i class="fas fa-user-plus fa-2x"></i>
+                        </span>
+                    </div>
+                    <h3 class="fw-bold text-dark">Join the Community</h3>
+                    <p class="text-muted small">Create an account to track waits and report buses.</p>
+                </div>
+
+                <!-- Body -->
+                <div class="auth-body">
+                    {% load crispy_forms_tags %}
+                    <form action="{% url 'accounts:signup' %}" method="post">
+                        {% csrf_token %}
+                        {{ form|crispy }}
+                        <p class="p-2">
+                            Already have an account? <a href="/login/">Login</a>
+                        </p>
+                        <!-- Submit Button -->
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary btn-signup shadow-sm">
+                                Create Account
+                            </button>
+                        </div>
+
+                        <!-- Footer Links -->
+                        <div class="text-center mt-4">
+                            <p class="small text-muted">
+                                By signing up, you agree to our <a href="#" class="text-decoration-none">Terms</a> and
+                                <a href="#" class="text-decoration-none">Privacy Policy</a>.
+                            </p>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
+</div>
 {% endblock content %}

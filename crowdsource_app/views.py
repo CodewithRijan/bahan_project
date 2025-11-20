@@ -9,6 +9,20 @@ from .models import BusStop, Rating, WaitLogModel
 from django.http import Http404
 from .forms import RatingForm
 from django.contrib.auth.decorators import login_required
+from accounts.models import UserProfile
+
+
+def context_helper_function(request,context):
+    
+    if request.user and request.user.is_authenticated: 
+        user_profile = UserProfile.objects.get(user=request.user)
+        new_context = {
+            'user_profile': user_profile
+        }
+        context.update(new_context)
+        return context
+    else:
+        return context
 
 def stop(request,stop_id):
   
@@ -33,6 +47,8 @@ def stop(request,stop_id):
         'form':ratingForm,
         'noOfRatings': noOfRatings
     }
+    
+    context = context_helper_function(request,context)
     
     return render(request,'crowdsource_app/stop.html',context)
 
@@ -78,12 +94,16 @@ def home(request):
         "bus_stops_json": bus_stops_json
     }
     
+    context = context_helper_function(request,context)
+    
     return render(request,'crowdsource_app/home.html',context)
 
     
-def report(request):
+def routes(request):
     
-    return render(request,'crowdsource_app/report.html')
+    context = context_helper_function(request,{})
+    
+    return render(request,'crowdsource_app/routes.html',context)
 
 class CommunityView(View):
     

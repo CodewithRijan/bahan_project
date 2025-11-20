@@ -1,0 +1,114 @@
+
+/* --- HERO SECTION --- */
+.routes-hero {
+    background: linear-gradient(135deg, #212529 0%, #343a40 100%);
+    color: white;
+    padding: 3rem 0;
+    margin-bottom: 2rem;
+    border-bottom-left-radius: 30px;
+    border-bottom-right-radius: 30px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+
+/* --- ROUTE CARD STYLING --- */
+.route-card {
+    border: none;
+    border-radius: 16px;
+    transition: all 0.3s ease;
+    background: white;
+    overflow: hidden;
+    position: relative;
+    cursor: pointer;
+    height: 100%;
+}
+
+.route-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+}
+
+.route-card-header {
+    padding: 1.5rem;
+    position: relative;
+}
+
+.route-badge {
+    position: absolute;
+    top: 1.5rem;
+    right: 1.5rem;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    padding: 5px 12px;
+    border-radius: 20px;
+    background: rgba(255,255,255,0.9);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.route-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    color: white;
+}
+
+/* Specific Route Colors */
+.color-ring-road { background: #13c271; } /* Green */
+.color-city-core { background: #0d6efd; } /* Blue */
+.color-bhaktapur { background: #dc3545; } /* Red */
+
+/* --- TIMELINE STYLING (The "Impressive" Part) --- */
+.timeline {
+    position: relative;
+    padding-left: 30px;
+    margin-top: 20px;
+}
+
+/* The vertical line */
+.timeline::before {
+    content: '';
+    position: absolute;
+    left: 7px;
+    top: 5px;
+    bottom: 5px;
+    width: 3px;
+    background: #e9ecef;
+}
+
+.timeline-item {
+    position: relative;
+    margin-bottom: 25px;
+}
+
+/* The dots on the timeline */
+.timeline-dot {
+    position: absolute;
+    left: -30px;
+    top: 5px;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    border: 3px solid white;
+    box-shadow: 0 0 0 2px #e9ecef;
+    background: #6c757d; /* Default color */
+}
+
+.timeline-content h6 { margin: 0; font-weight: 700; }
+.timeline-content p { margin: 0; font-size: 0.85rem; color: #6c757d; }
+
+/* Connectors between stops */
+.time-pill {
+    display: inline-block;
+    font-size: 0.7rem;
+    background: #f1f3f5;
+    color: #adb5bd;
+    padding: 2px 8px;
+    border-radius: 10px;
+    margin-top: 5px;
+}

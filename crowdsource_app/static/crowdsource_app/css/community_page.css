@@ -1,0 +1,166 @@
+:root {
+    --bg1: #0f2027;
+    --bg2: #203a43;
+    --accent: #ffb100
+}
+
+.under-wrap {
+    min-height: calc(100vh);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--bg1), var(--bg2));
+    color: #fff;
+    padding: 4rem 1rem;
+}
+
+.card-uc {
+    background: rgba(255, 255, 255, 0.04);
+    border-radius: 16px;
+    padding: 3rem;
+    max-width: 820px;
+    width: 100%;
+    text-align: center;
+    box-shadow: 0 8px 30px rgba(2, 6, 23, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    backdrop-filter: blur(6px)
+}
+
+.icon-stack {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem
+}
+
+.icon-circle {
+    width: 110px;
+    height: 110px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.01));
+    position: relative
+}
+
+.icon-circle .fa {
+    font-size: 44px;
+    color: var(--accent);
+    animation: floatY 3s ease-in-out infinite
+}
+
+.icon-gear {
+    animation: spin 6s linear infinite;
+    color: #ffd27a
+}
+
+.icon-pulse {
+    position: relative
+}
+
+.icon-pulse::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    box-shadow: 0 0 0 0 rgba(255, 177, 0, 0.2);
+    animation: pulse 1.8s infinite
+}
+
+h1.uc-title {
+    font-size: 2.25rem;
+    margin-bottom: 0.25rem;
+    letter-spacing: -0.5px
+}
+
+.uc-sub {
+    color: rgba(255, 255, 255, 0.78);
+    margin-bottom: 1.25rem
+}
+
+.shimmer {
+    display: inline-block;
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.25) 50%, rgba(255, 255, 255, 0.08) 100%);
+    background-size: 200% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: shimmer 2.2s infinite
+}
+
+.btn-ghost {
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    color: #fff
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg)
+    }
+
+    to {
+        transform: rotate(360deg)
+    }
+}
+
+@keyframes floatY {
+    0% {
+        transform: translateY(0)
+    }
+
+    50% {
+        transform: translateY(-8px)
+    }
+
+    100% {
+        transform: translateY(0)
+    }
+}
+
+@keyframes pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(255, 177, 0, 0.25)
+    }
+
+    70% {
+        box-shadow: 0 0 0 28px rgba(255, 177, 0, 0)
+    }
+
+    100% {
+        box-shadow: 0 0 0 0 rgba(255, 177, 0, 0)
+    }
+}
+
+@keyframes shimmer {
+    0% {
+        background-position: 200% 0
+    }
+
+    100% {
+        background-position: -200% 0
+    }
+}
+
+.small-note {
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.6);
+    margin-top: 1rem
+}
+
+@media (max-width:576px) {
+    .icon-circle {
+        width: 84px;
+        height: 84px
+    }
+
+    .icon-circle .fa {
+        font-size: 32px
+    }
+
+    h1.uc-title {
+        font-size: 1.6rem
+    }
+}

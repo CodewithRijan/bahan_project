@@ -1,0 +1,270 @@
+{% extends 'crowdsource_app/base.html' %}
+{% block title %}
+Bahan - Report
+{% endblock title %}
+{% block content %}
+
+<div class="routes-hero text-center">
+    <div class="container">
+        <h1 class="fw-bold mb-2">Explore Routes</h1>
+        <p class="text-white-50 mb-4">Find the best way to get around Kathmandu Valley.</p>
+
+        <!-- Fake Search Bar -->
+        <div class="bg-white rounded-pill p-2 shadow mx-auto d-flex" style="max-width: 500px;">
+            <span class="input-group-text border-0 bg-transparent"><i class="fas fa-search text-muted"></i></span>
+            <input type="text" class="form-control border-0 shadow-none"
+                placeholder="Search for a bus stop or location...">
+            <button class="btn btn-primary rounded-pill px-4 fw-bold">Search</button>
+        </div>
+    </div>
+</div>
+
+<!-- Main Content: Route Cards Grid -->
+<div class="container mb-5">
+    <div class="row g-4">
+
+        <!-- CARD 1: Ring Road (The Green Line) -->
+        <div class="col-md-4">
+            <div class="route-card shadow-sm h-100" onclick="openRouteModal('ringroad')">
+                <div class="route-card-header color-ring-road bg-opacity-10">
+                    <div class="route-badge text-success">High Freq</div>
+                    <div class="route-icon color-ring-road shadow">
+                        <i class="fas fa-sync-alt"></i>
+                    </div>
+                    <h4 class="fw-bold mb-1">Ring Road (चक्रपथ)</h4>
+                    <p class="text-muted mb-3 small">Full Loop &bull; 27km</p>
+
+                    <div class="d-flex justify-content-between align-items-center mt-4 pt-3 border-top">
+                        <div class="small">
+                            <i class="fas fa-clock text-success me-1"></i> Every 5-10 mins
+                        </div>
+                        <div class="small fw-bold text-dark">
+                            Rs. 15 - 35
+                        </div>
+                    </div>
+                </div>
+                <div class="p-3 bg-light border-top">
+                    <small class="text-muted">Major Stops:</small>
+                    <p class="small fw-bold mb-0 text-truncate">Kalanki, Gongabu, Maharajgunj, Chabahil, Koteshwor,
+                        Satdobato</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- CARD 2: City Core (The Blue Line) -->
+        <div class="col-md-4">
+            <div class="route-card shadow-sm h-100" onclick="openRouteModal('citycore')">
+                <div class="route-card-header">
+                    <div class="route-badge text-primary">Popular</div>
+                    <div class="route-icon color-city-core shadow">
+                        <i class="fas fa-city"></i>
+                    </div>
+                    <h4 class="fw-bold mb-1">Ratna Park - Lagankhel</h4>
+                    <p class="text-muted mb-3 small">City Center Link &bull; 6km</p>
+
+                    <div class="d-flex justify-content-between align-items-center mt-4 pt-3 border-top">
+                        <div class="small">
+                            <i class="fas fa-clock text-primary me-1"></i> Every 15 mins
+                        </div>
+                        <div class="small fw-bold text-dark">
+                            Rs. 20 Flat
+                        </div>
+                    </div>
+                </div>
+                <div class="p-3 bg-light border-top">
+                    <small class="text-muted">Major Stops:</small>
+                    <p class="small fw-bold mb-0 text-truncate">Ratna Park, Tripureshwor, Kupandole, Pulchowk,
+                        Jawalakhel</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- CARD 3: Bhaktapur Express (The Red Line) -->
+        <div class="col-md-4">
+            <div class="route-card shadow-sm h-100" onclick="openRouteModal('bhaktapur')">
+                <div class="route-card-header">
+                    <div class="route-badge text-danger">Express</div>
+                    <div class="route-icon color-bhaktapur shadow">
+                        <i class="fas fa-torii-gate"></i>
+                    </div>
+                    <h4 class="fw-bold mb-1">Koteshwor - Bhaktapur</h4>
+                    <p class="text-muted mb-3 small">Araniko Highway &bull; 12km</p>
+
+                    <div class="d-flex justify-content-between align-items-center mt-4 pt-3 border-top">
+                        <div class="small">
+                            <i class="fas fa-clock text-danger me-1"></i> Every 20 mins
+                        </div>
+                        <div class="small fw-bold text-dark">
+                            Rs. 25 - 40
+                        </div>
+                    </div>
+                </div>
+                <div class="p-3 bg-light border-top">
+                    <small class="text-muted">Major Stops:</small>
+                    <p class="small fw-bold mb-0 text-truncate">Koteshwor, Lokanthali, Kaushaltar, Suryabinayak,
+                        Kamalbinayak</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+<!-- Route Modal -->
+<div class="modal fade" id="routeDetailModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content border-0 rounded-4">
+
+            <!-- Modal Header: Dynamic Color -->
+            <div class="modal-header border-0 text-white" id="modalHeader">
+                <div>
+                    <h5 class="modal-title fw-bold" id="modalTitle">Route Name</h5>
+                    <p class="mb-0 small opacity-75" id="modalSubtitle">Route Details</p>
+                </div>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                    aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body p-4">
+                <!-- Stats Row -->
+                <div class="row g-2 mb-4 text-center">
+                    <div class="col-4">
+                        <div class="p-2 bg-light rounded-3">
+                            <div class="small text-muted">Distance</div>
+                            <div class="fw-bold" id="modalDistance">0km</div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="p-2 bg-light rounded-3">
+                            <div class="small text-muted">Stops</div>
+                            <div class="fw-bold" id="modalStopsCount">0</div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="p-2 bg-light rounded-3">
+                            <div class="small text-muted">Full Trip</div>
+                            <div class="fw-bold" id="modalDuration">0m</div>
+                        </div>
+                    </div>
+                </div>
+
+                <h6 class="fw-bold text-secondary mb-3">Route Path</h6>
+
+                <!-- The Vertical Timeline (Populated by JS) -->
+                <div class="timeline" id="modalTimeline">
+                    <!-- Javascript will inject HTML here -->
+                </div>
+
+            </div>
+
+            <div class="modal-footer border-0 bg-light">
+                <button type="button" class="btn btn-outline-secondary w-100" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Mock Data for the Routes
+    const routeData = {
+        'ringroad': {
+            title: 'Ring Road (Full Loop)',
+            subtitle: 'Clockwise Direction',
+            colorClass: 'bg-success', // Bootstrap class
+            dotColor: '#198754',
+            distance: '27 km',
+            stopsCount: '8 Major',
+            duration: '~90 mins',
+            stops: [
+                { name: 'Kalanki', time: 'Start' },
+                { name: 'Swayambhu', time: '10 mins' },
+                { name: 'Balaju (Gongabu)', time: '15 mins' },
+                { name: 'Maharajgunj', time: '12 mins' },
+                { name: 'Chabahil', time: '15 mins' },
+                { name: 'Gaushala', time: '08 mins' },
+                { name: 'Koteshwor', time: '15 mins' },
+                { name: 'Satdobato', time: '12 mins' },
+                { name: 'Kalanki (End)', time: '15 mins' }
+            ]
+        },
+        'citycore': {
+            title: 'Ratna Park - Lagankhel',
+            subtitle: 'Sajha Yatayat Route',
+            colorClass: 'bg-primary',
+            dotColor: '#0d6efd',
+            distance: '6 km',
+            stopsCount: '5 Major',
+            duration: '~35 mins',
+            stops: [
+                { name: 'Ratna Park', time: 'Start' },
+                { name: 'Tripureshwor', time: '08 mins' },
+                { name: 'Kupandole', time: '10 mins' },
+                { name: 'Pulchowk', time: '05 mins' },
+                { name: 'Jawalakhel', time: '05 mins' },
+                { name: 'Lagankhel Bus Park', time: '07 mins' }
+            ]
+        },
+        'bhaktapur': {
+            title: 'Koteshwor - Bhaktapur',
+            subtitle: 'Araniko Highway Express',
+            colorClass: 'bg-danger',
+            dotColor: '#dc3545',
+            distance: '12 km',
+            stopsCount: '5 Major',
+            duration: '~45 mins',
+            stops: [
+                { name: 'Koteshwor', time: 'Start' },
+                { name: 'Lokanthali', time: '05 mins' },
+                { name: 'Kaushaltar', time: '04 mins' },
+                { name: 'Thimi (Chardobato)', time: '08 mins' },
+                { name: 'Suryabinayak', time: '15 mins' },
+                { name: 'Kamalbinayak', time: '12 mins' }
+            ]
+        }
+    };
+
+    const routeModal = new bootstrap.Modal(document.getElementById('routeDetailModal'));
+
+    function openRouteModal(routeKey) {
+        const data = routeData[routeKey];
+        if (!data) return;
+
+        // 1. Set Header Colors & Text
+        const header = document.getElementById('modalHeader');
+        header.className = `modal-header border-0 text-white ${data.colorClass}`;
+
+        document.getElementById('modalTitle').textContent = data.title;
+        document.getElementById('modalSubtitle').textContent = data.subtitle;
+
+        // 2. Set Stats
+        document.getElementById('modalDistance').textContent = data.distance;
+        document.getElementById('modalStopsCount').textContent = data.stopsCount;
+        document.getElementById('modalDuration').textContent = data.duration;
+
+        // 3. Build the Timeline HTML
+        const timelineContainer = document.getElementById('modalTimeline');
+        timelineContainer.innerHTML = ''; // Clear previous
+
+        data.stops.forEach((stop, index) => {
+            const isLast = index === data.stops.length - 1;
+
+            // HTML for one stop
+            const html = `
+                    <div class="timeline-item">
+                        <div class="timeline-dot" style="background-color: ${data.dotColor}"></div>
+                        <div class="timeline-content">
+                            <h6>${stop.name}</h6>
+                            ${!isLast ? `<div class="time-pill"><i class="fas fa-walking me-1"></i>${data.stops[index + 1].time} drive</div>` : '<small class="text-success fw-bold">Destination Reached</small>'}
+                        </div>
+                    </div>
+                `;
+            timelineContainer.innerHTML += html;
+        });
+
+        // 4. Show Modal
+        routeModal.show();
+    }
+</script>
+
+{% endblock content %}

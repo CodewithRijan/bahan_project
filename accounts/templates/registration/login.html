@@ -1,18 +1,48 @@
 {% extends 'crowdsource_app/base.html' %}
 {% block title %}
-    Bahan - Login
+Bahan - Login
 {% endblock title %}
+{% block css %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'accounts/registration.css' %}">
+{% endblock css %}
 {% block content %}
-    <div class="container">
-        <h1>Login</h1>
-        {% load crispy_forms_tags %}
-        <form action="/login/" method="post">
-            {% csrf_token %}
-            {{ form|crispy }}
-            <p class="p-2 ">
-                Don't have an account? <a href="{% url 'accounts:signup' %}">Sign Up</a>
-            </p>
-            <button type="submit" class="btn btn-primary">Login</button>
-        </form>
+<div class="container flex-grow-1 d-flex align-items-center justify-content-center py-5 auth-container">
+    <div class="row w-100 justify-content-center">
+        <div class="col-lg-6 col-md-8 col-12">
+            <!-- The Form Card -->
+            <div class="card auth-card">
+
+                <!-- Header -->
+                <div class="auth-header">
+                    <div class="mb-3">
+                        <div class="d-inline-block p-3 rounded-circle bg-primary bg-opacity-10 text-primary mb-2">
+                            <i class="fas fa-sign-in-alt fa-2x"></i>
+                        </div>
+                    </div>
+                    <h3 class="fw-bold text-dark mb-1">Welcome Back</h3>
+                    <p class="text-muted small mb-0">Log in to continue your journey.</p>
+                </div>
+
+                <!-- Body -->
+                <div class="auth-body">
+                    {% load crispy_forms_tags %}
+                    <form action="/login/" method="post">
+                        {% csrf_token %}
+                        {{ form|crispy }}
+                        <p class="p-2 ">
+                            Don't have an account? <a href="{% url 'accounts:signup' %}">Sign Up</a>
+                        </p>
+                        <!-- Submit Button -->
+                        <div class="d-grid gap-2 mt-4">
+                            <button type="submit" class="btn btn-primary btn-login text-white shadow-sm">
+                                Log In
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
+</div>
 {% endblock content %}
